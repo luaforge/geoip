@@ -13,7 +13,7 @@
 
 
 LIBS	:=-lGeoIP
-CFLAGS	:=-Wall -I GeoIP-1.4.6/libGeoIP
+CFLAGS	:=-Wall -I libGeoIP
 
 all: geoip.so
 
