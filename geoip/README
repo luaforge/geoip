@@ -1,0 +1,66 @@
+
+GeoIP
+=====
+
+This Lua binding provides access to the most important functions of libGeoIP,
+a C library to query the database files produced by MaxMind [1].  Basically
+these data files map an IP address to a location or other information.
+
+
+Installation
+------------
+
+The easiest way is to build and/or install this module as Lua Rock.  When
+you have the *.rockspec file, do this:
+
+   luarocks install geoip
+
+This won't work yet as this rock isn't in the official repository.  Rather,
+do this:
+
+  luarocks --from=geoip.luaforge.net/rocks install geoip
+
+To compile and link, libGeoIP has to be installed including the .so file
+and the headers.  In Debian, this is available in the libgeoip-dev package,
+so you could do this first:
+
+  apt-get install libgeoip-dev
+
+Otherwise you could build libGeoIP from source which is available from
+MaxMind's websiteb [2].
+
+
+
+Usage
+-----
+
+First, load the library, which returns a table with two functions:
+
+ geoip = require"geoip"
+ g = geoip.open_type"country"
+ g = geoip.open"/usr/share/GeoIP/GeoLiteCity.dat"
+
+The "open_type" function lets libGeoIP select the correct path and filename
+for the desired database type, while "open" takes a file name and opens it.
+Which type of data is contained in the file is detected automatically in
+both cases.
+
+The object returned by either open function provides just one method, lookup.
+
+ r = g:lookup("74.125.67.100")
+ r = g:lookup("google.com")
+
+Either an IP address can be given, or a hostname, which is converted to an
+IP address first.  Both functions either return nil on error or a result
+object.
+
+This result object can be used in the following ways:
+
+  - convert it to a string, e.g. print(r)
+  - retrieve an individual field, e.g. print(r.country_code)
+  - iterate over the fields: for f, v in r do print(f, v) end
+
+
+[1] http://www.maxmind.com/
+[2] http://www.maxmind.com/app/c
+
