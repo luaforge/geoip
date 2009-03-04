@@ -4,7 +4,7 @@ package = "GeoIP"
 version = "0.1-1"
 
 source = {
-    url = "file:///home/wolfgang/devel/lua/geoip/geoip-0.1-1.tar.gz"
+    url = "http://geoip.luaforge.net/rocks/geoip-0.1-1.tar.gz"
 }
 
 description = {
