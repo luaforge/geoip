@@ -1,0 +1,17 @@
+
+2009-03-02
+- first version with access to city, country and region databases
+
+2009-03-03
+- documentation in README, ChangeLog
+- access fields using the Field structure that describes each field
+- iterator to access all fields
+
+2009-03-04
+- improvement of the iterator
+- code cleanup
+- catch error messages of GeoIP_open(_type)
+- open_type accepts multiple type names
+- added a rockspec file
+- don't include header files of libGeoIP - use package libgeoip-dev.
+
