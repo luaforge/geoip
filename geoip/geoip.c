@@ -1,7 +1,12 @@
 /** vim:sw=4:sts=4
  *
  * Bindings for the GeoIP database library by MaxMind.
- * by Wolfgang Oertl 2009
+ * Copyright (C) 2009  Wolfgang Oertl
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  */
 
 #include <GeoIPCity.h>
@@ -75,7 +80,7 @@ static int _access_field(lua_State *L, Result *r, Field *f)
 	lua_pushnumber(L, * (float*) (p + f->offset));
 	return 1;
 	
-	// callback
+	/* callback */
 	case 3:
 	return f->callback(L, r, f);
     }
@@ -251,8 +256,8 @@ static int l_result_call(lua_State *L)
     Result *r = luaL_checkudata(L, 1, RESULT);
     Field *f = r->meta->fields;
 
-    // if not the first call, find the last accessed field, then advance to the
-    // next field.
+    /* if not the first call, find the last accessed field, then advance to the
+     * next field. */
     if (lua_type(L, 3) == LUA_TSTRING) {
 	const char *name = lua_tostring(L, 3);
 	while (f->name && strcmp(f->name, name))
@@ -301,35 +306,39 @@ static int l_geoip_lookup(lua_State *L)
     memset(&gir, 0, sizeof(gir));
 
     switch (lgi->gi->databaseType) {
-	case GEOIP_COUNTRY_EDITION:;
+	case GEOIP_COUNTRY_EDITION: {
 	int id = GeoIP_id_by_name(lgi->gi, hostname);
 	if (!id)
 	    return 0;
 	gir.meta = &result_meta_country;
 	gir.data = (void*) id;
 	break;
+	}
 
-	case GEOIP_REGION_EDITION_REV1:;
+	case GEOIP_REGION_EDITION_REV1: {
 	GeoIPRegion *reg = GeoIP_region_by_name(lgi->gi, hostname);
 	if (!reg)
 	    return 0;
 	gir.meta = &result_meta_region;
 	gir.data = (void*) reg;
 	break;
+	}
 
-	case GEOIP_CITY_EDITION_REV1:;
+
+	case GEOIP_CITY_EDITION_REV1: {
 	GeoIPRecord *r = GeoIP_record_by_name(lgi->gi, hostname);
 	if (!r)
 	    return 0;
 	gir.meta = &result_meta_city;
 	gir.data = (void*) r;
 	break;
+	}
 
 	default:
 	return 0;
     }
 
-    // success - create the Result object.
+    /* success - create the Result object. */
     p = (Result*) lua_newuserdata(L, sizeof(*p));
     memcpy(p, &gir, sizeof(*p));
     if (luaL_newmetatable(L, RESULT))
@@ -479,9 +488,10 @@ static int l_open(lua_State *L)
 {
     const char *filename = luaL_checkstring(L, 1);
     Stderr e;
+    GeoIP *gi;
 
     stderr_init(&e);
-    GeoIP *gi = GeoIP_open(filename, GEOIP_INDEX_CACHE);
+    gi = GeoIP_open(filename, GEOIP_INDEX_CACHE);
     stderr_done(&e);
     return _open_common(L, gi, e.buf);
 }
